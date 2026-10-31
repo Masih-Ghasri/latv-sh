@@ -1,0 +1,27 @@
+# Binaries & Executables
+latv-sh
+*.exe
+*.out
+*.app
+
+# Object files and libraries
+*.o
+*.a
+*.so
+*.dylib
+
+# Temporary test artifacts
+test_output.tmp
+*.tmp
+
+# Presentation & Office files
+*.pptx
+*.ppt
+*.pdf
+*.html
+
+# IDE / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
