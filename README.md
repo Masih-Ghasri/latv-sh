@@ -100,7 +100,7 @@ sequenceDiagram
     ChildA->>ChildA: close(3), close(4)
     ChildA->>ChildA: execvp(cmd1)
     deactivate ChildA
-    Parent->>Parent: close(fd 4) [Write end closed in parent!]
+    Parent->>Parent: close(fd 4) - Write end closed in parent!
 
     Note over Parent,Pipe: Stage 2 Setup
     Parent->>ChildB: fork() Child B with in_fd=3
@@ -110,7 +110,7 @@ sequenceDiagram
     ChildB->>ChildB: close(3)
     ChildB->>ChildB: execvp(cmd2)
     deactivate ChildB
-    Parent->>Parent: close(fd 3) [All pipe descriptors closed in parent!]
+    Parent->>Parent: close(fd 3) - All pipe descriptors closed in parent!
 
     Note over ChildA,ChildB: Stream Execution
     ChildA->>Pipe: write data to stdout
@@ -130,15 +130,15 @@ Terminal drivers send `SIGINT` (Ctrl+C) to the entire foreground process group. 
 
 ```mermaid
 flowchart LR
-    Terminal["Terminal Driver<br/>(ISIG on Ctrl+C)"] -->|Delivers SIGINT| PGroup["Foreground Process Group"]
+    Terminal["Terminal Driver<br/>(ISIG on Ctrl+C)"] -->|"Delivers SIGINT"| PGroup["Foreground Process Group"]
     
     subgraph PGroup ["Foreground Process Group"]
         ShellParent["latv-sh Parent Process<br/>• sigaction(SIGINT, flags=0)<br/>• NO SA_RESTART<br/>• Sets sig_atomic_t flag"]
         ChildProcess["Child Process (e.g., sleep 100)<br/>• Restored to SIG_DFL<br/>• Terminated by kernel<br/>• Status: 128 + 2 = 130"]
     end
 
-    ShellParent -->|Interrupts getline()| Reprompt["Clears flag & reprints prompt<br/>Shell stays ALIVE"]
-    ChildProcess -->|Reaped by waitpid| ExitCode["Parent sets $? = 130"]
+    ShellParent -->|"Interrupts getline()"| Reprompt["Clears flag & reprints prompt<br/>Shell stays ALIVE"]
+    ChildProcess -->|"Reaped by waitpid"| ExitCode["Parent sets $? = 130"]
 
     classDef danger fill:#dc2626,stroke:#991b1b,color:#ffffff,stroke-width:2px;
     classDef safe fill:#16a34a,stroke:#15803d,color:#ffffff,stroke-width:2px;
